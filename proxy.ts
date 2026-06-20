@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Add security headers and logging middleware
-export function middleware(request: NextRequest) {
+// Add security headers and logging proxy
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // Add security headers (duplicated here for completeness)
@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
   return response;
 }
 
-// Configure which routes to apply middleware to
+// Configure which routes to apply proxy to
 export const config = {
   matcher: [
     // Apply to all routes except static assets and Next.js internals
