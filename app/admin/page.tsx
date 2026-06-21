@@ -198,6 +198,29 @@ export default function AdminPage() {
     await Promise.all(teams.map((t) => supabase.from("teams").update({ score: 0 }).eq("id", t.id)));
   };
 
+  const resetQuestionsAndScores = async () => {
+    if (!confirm("🚨 Reset ALL questions and scores? This cannot be undone!")) return;
+    try {
+      // Reset all scores
+      await Promise.all(teams.map((t) => supabase.from("teams").update({ score: 0 }).eq("id", t.id)));
+      // Reset quiz state: clear current question, reset buzzers and answer reveal
+      await supabase
+        .from("quiz_state")
+        .update({
+          current_question_id: null,
+          buzzers_open: false,
+          answer_revealed: false,
+          round_token: crypto.randomUUID(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", 1);
+      showToast("Questions and scores reset!");
+    } catch (err) {
+      showToast(getUserFriendlyErrorMessage(err), "error");
+      logger.error("Reset Questions and Scores", err);
+    }
+  };
+
   // ---------- Question management ----------
   const addQuestion = async () => {
     if (!newQ.question_text.trim()) return;
@@ -459,12 +482,20 @@ export default function AdminPage() {
             {teams.length === 0 && <p className="text-neutral-500">No teams yet.</p>}
           </div>
           {teams.length > 0 && (
-            <button
-              onClick={resetAllScores}
-              className="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-sm"
-            >
-              Reset all scores to 0
-            </button>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={resetAllScores}
+                className="px-4 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-sm font-medium"
+              >
+                Reset all scores to 0
+              </button>
+              <button
+                onClick={resetQuestionsAndScores}
+                className="px-4 py-2 rounded-lg bg-red-900 hover:bg-red-800 text-sm font-medium text-red-100"
+              >
+                🔄 Reset Questions & Scores
+              </button>
+            </div>
           )}
         </div>
       )}
