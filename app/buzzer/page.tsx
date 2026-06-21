@@ -158,21 +158,21 @@ export default function BuzzerPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-white">
-        <p className="text-lg opacity-70">Loading…</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-white">
+        <p className="text-lg opacity-70 text-cyan-400">Loading…</p>
       </div>
     );
   }
 
   if (error && !myTeamId) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center px-6">
         <div className="text-center max-w-md">
-          <h1 className="text-2xl font-bold mb-2">⚠️ Connection Error</h1>
-          <p className="text-neutral-400 mb-4">{error}</p>
+          <h1 className="text-2xl font-bold mb-2 text-fuchsia-400">⚠️ Connection Error</h1>
+          <p className="text-cyan-300/70 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-500"
+            className="px-6 py-2 rounded-lg bg-fuchsia-600 text-white font-bold hover:bg-fuchsia-500 border border-fuchsia-400"
           >
             Retry
           </button>
@@ -184,12 +184,12 @@ export default function BuzzerPage() {
   // ---- Team selection screen ----
   if (!myTeamId) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center px-6 py-12">
-        <h1 className="text-2xl font-bold mb-1">Pick your team</h1>
-        <p className="text-neutral-400 mb-8 text-sm">Tap your team name to continue</p>
+      <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center px-6 py-12">
+        <h1 className="text-2xl font-bold mb-1 text-cyan-400">Pick your team</h1>
+        <p className="text-cyan-300/60 mb-8 text-sm">Tap your team name to continue</p>
         <div className="w-full max-w-sm flex flex-col gap-3">
           {teams.length === 0 && (
-            <p className="text-neutral-500 text-center mt-8">
+            <p className="text-cyan-400/50 text-center mt-8">
               No teams yet. Ask the host to add teams in the admin panel.
             </p>
           )}
@@ -197,7 +197,7 @@ export default function BuzzerPage() {
             <button
               key={t.id}
               onClick={() => selectTeam(t.id)}
-              className="w-full py-4 px-5 rounded-xl bg-neutral-800 hover:bg-neutral-700 active:scale-95 transition text-left text-lg font-semibold border border-neutral-700"
+              className="w-full py-4 px-5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 transition text-left text-lg font-semibold border border-cyan-500/30 hover:border-cyan-400/60 hover:shadow-md hover:shadow-cyan-500/20"
             >
               {t.name}
             </button>
@@ -212,12 +212,12 @@ export default function BuzzerPage() {
   const alreadyBuzzed = myBuzzPosition !== null;
 
   let buttonLabel = "WAIT";
-  let buttonClasses = "bg-neutral-800 text-neutral-500";
+  let buttonClasses = "bg-slate-800 text-slate-500 border-slate-700";
   let subLabel = "Buzzers are closed";
 
   if (alreadyBuzzed) {
     buttonLabel = "BUZZED!";
-    buttonClasses = "bg-amber-500 text-black";
+    buttonClasses = "bg-gradient-to-r from-lime-500 to-emerald-500 text-black border-lime-400 shadow-xl shadow-lime-500/50";
     subLabel =
       myBuzzPosition === 1
         ? "You're FIRST! 🎉"
@@ -225,41 +225,48 @@ export default function BuzzerPage() {
   } else if (buzzersOpen) {
     buttonLabel = "BUZZ";
     buttonClasses = pressing
-      ? "bg-red-700 text-white scale-95"
-      : "bg-red-600 text-white active:scale-95";
+      ? "bg-gradient-to-r from-fuchsia-700 to-pink-700 text-white border-fuchsia-500 scale-95 shadow-lg shadow-fuchsia-600/50"
+      : "bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white border-fuchsia-400 active:scale-95 shadow-xl shadow-fuchsia-500/50";
     subLabel = "Tap now!";
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex flex-col items-center justify-between px-6 py-8">
-      {error && (
-        <div className="fixed top-4 left-4 right-4 px-4 py-3 rounded-lg bg-red-600 text-white text-sm font-semibold">
-          {error}
-        </div>
-      )}
-      <div className="w-full flex items-center justify-between">
+    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-between px-6 py-8 relative overflow-hidden">
+      {/* Space glow effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-40 right-40 w-80 h-80 bg-cyan-500 opacity-10 blur-3xl rounded-full" />
+        <div className="absolute bottom-40 left-40 w-80 h-80 bg-fuchsia-500 opacity-10 blur-3xl rounded-full" />
+      </div>
+      
+      <div className="relative z-10 w-full flex items-center justify-between">
         <div>
-          <p className="text-neutral-400 text-xs uppercase tracking-wide">Team</p>
-          <p className="text-xl font-bold">{myTeam?.name}</p>
+          <p className="text-cyan-400/70 text-xs uppercase tracking-wide font-mono">Team</p>
+          <p className="text-xl font-bold text-cyan-100">{myTeam?.name}</p>
         </div>
         <button
           onClick={changeTeam}
-          className="text-xs text-neutral-400 underline underline-offset-2"
+          className="text-xs text-cyan-400/80 underline underline-offset-2 hover:text-cyan-300 transition"
         >
           switch team
         </button>
       </div>
 
+      {error && (
+        <div className="fixed top-4 left-4 right-4 px-4 py-3 rounded-lg bg-fuchsia-600/80 text-white text-sm font-semibold border border-fuchsia-400">
+          {error}
+        </div>
+      )}
+
       <button
         onClick={buzz}
         disabled={!buzzersOpen || alreadyBuzzed}
-        className={`flex-1 my-8 w-full max-w-sm aspect-square rounded-full text-4xl font-extrabold tracking-wide transition-transform duration-100 shadow-2xl flex items-center justify-center ${buttonClasses}`}
+        className={`flex-1 my-8 w-full max-w-sm aspect-square rounded-full text-4xl font-extrabold tracking-wide transition-transform duration-100 shadow-2xl flex items-center justify-center border-2 ${buttonClasses}`}
       >
         {buttonLabel}
       </button>
 
-      <p className="text-lg font-medium text-neutral-300 mb-4">{subLabel}</p>
-      <p className="text-xs text-neutral-600">Score: {myTeam?.score ?? 0}</p>
+      <p className="text-lg font-medium text-cyan-300 mb-4">{subLabel}</p>
+      <p className="text-xs text-cyan-400/60 font-mono">Score: {myTeam?.score ?? 0}</p>
     </div>
   );
 }
